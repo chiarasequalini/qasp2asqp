@@ -1,0 +1,66 @@
+import argparse
+
+#input management
+
+parser = argparse.ArgumentParser()
+parser.add_argument("file", help="requires a .lp file", type=argparse.FileType('r'))
+args = parser.parse_args()
+
+source = args.file.read().splitlines()
+
+#parsing the source file and dividing it into the quantifiers and the program
+
+quantifiers = []
+constraints = []
+
+for x in source:
+    if ("_exists" in x or "_forall" in x or "_quantify" in x) and not("#show" in x):
+        quantifiers.append(x)
+    else:
+        constraints.append(x)
+
+#reordering the quantifiers based on their index 
+
+quantReorder = [[col for col in range(2)] for row in range(len(quantifiers))]
+
+for i in range(len(quantifiers)):
+    quantReorder[i][0] = int(quantifiers[i].split('(')[1].split(',')[0])
+    quantReorder[i][1] = quantifiers[i]
+
+quantReorder.sort()
+
+#formatting the quantifiers
+#ex: _exists(1,a) becomes
+#%@exists
+#{a}.
+
+translation = ""
+
+for i in range(len(quantReorder)):
+    if "_exists" in quantReorder[i][1] or ("_quantify" in quantReorder[i][1] and quantReorder[i][0] % 2 == 0):
+        translation = translation + "%@exists \n"
+    if "_forall" in quantReorder[i][1] or ("_quantify" in quantReorder[i][1] and quantReorder[i][0] % 2 != 0):
+        translation = translation + "%@forall \n"
+    q = quantReorder[i][1].split(',')[1].split(')')[0]
+    if "(" in q:
+        translation = translation + "{" + q + ")}"
+    else:
+        translation = translation + "{" + q + "}"
+    if ":-" in quantReorder[i][1]:
+        translation = translation + quantReorder[i][1].split(' ')[1] + " " + quantReorder[i][1].split(' ')[2] + "\n"
+    else:
+        translation = translation + ". \n"
+
+#formatting the program and the empty constraints
+
+translation = translation + "%@exists \n"
+
+for x in constraints:
+    translation = translation + x + "\n"
+
+translation = translation + "%@constraint \n"
+
+#output
+
+with open("qasp2aspqtrans.asp", "w") as f:
+  f.write(translation)
