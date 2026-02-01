@@ -1,3 +1,8 @@
+# TODO: 
+# 1: review planning problems in aspq (why do the #include statement and the #show statement cause a parsing error in pyqasp?)
+# 2: add management for planning problem domain and instance (2 files in input?)
+
+
 import argparse
 
 #input management
@@ -47,7 +52,7 @@ for i in range(len(quantReorder)):
     else:
         translation = translation + "{" + q + "}"
     if ":-" in quantReorder[i][1]:
-        translation = translation + quantReorder[i][1].split(' ')[1] + " " + quantReorder[i][1].split(' ')[2] + "\n"
+        translation = translation + " :- " + quantReorder[i][1].split('-')[1] + "\n"
     else:
         translation = translation + ". \n"
 
@@ -56,7 +61,8 @@ for i in range(len(quantReorder)):
 translation = translation + "%@exists \n"
 
 for x in constraints:
-    translation = translation + x + "\n"
+    if not "#show" in x:
+        translation = translation + x + "\n"
 
 translation = translation + "%@constraint \n"
 
