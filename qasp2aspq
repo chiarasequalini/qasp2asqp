@@ -1,17 +1,14 @@
 # TODO: 
-# 1: review planning problems in aspq (why do the #include statement and the #show statement cause a parsing error in pyqasp?)
-# 2: add management for planning problem domain and instance (2 files in input?)
+# add management for planning problem domain and instance (2 files in input?)
 
-
-import argparse
+import fileinput
 
 #input management
 
-parser = argparse.ArgumentParser()
-parser.add_argument("file", help="requires a .lp file", type=argparse.FileType('r'))
-args = parser.parse_args()
+source = []
 
-source = args.file.read().splitlines()
+for line in fileinput.input(encoding="utf-8"):
+    source.append(line)
 
 #parsing the source file and dividing it into the quantifiers and the program
 
@@ -68,5 +65,4 @@ translation = translation + "%@constraint \n"
 
 #output
 
-with open("qasp2aspqtrans.asp", "w") as f:
-  f.write(translation)
+print(translation)
