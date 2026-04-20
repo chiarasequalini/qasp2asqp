@@ -43,11 +43,8 @@ for i in range(len(quantReorder)):
         translation = translation + "%@exists \n"
     if "_forall" in quantReorder[i][1] or ("_quantify" in quantReorder[i][1] and quantReorder[i][0] % 2 != 0):
         translation = translation + "%@forall \n"
-    q = quantReorder[i][1].split(',')[1].split(')')[0]
-    if "(" in q:
-        translation = translation + "{" + q + ")}"
-    else:
-        translation = translation + "{" + q + "}"
+    q = quantReorder[i][1].split(',',1)[1].split(') ')[0].split(').')[0])
+    translation = translation + "{" + q + "}"
     if ":-" in quantReorder[i][1]:
         translation = translation + " :- " + quantReorder[i][1].split('-')[1] + "\n"
     else:
