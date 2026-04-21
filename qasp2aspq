@@ -41,7 +41,7 @@ translation = ""
 for i in range(len(quantReorder)):
     if "_exists" in quantReorder[i][1] or ("_quantify" in quantReorder[i][1] and quantReorder[i][0] % 2 == 0):
         translation = translation + "%@exists \n"
-    if "_forall" in quantReorder[i][1] or ("_quantify" in quantReorder[i][1] and quantReorder[i][0] % 2 != 0):
+    else:
         translation = translation + "%@forall \n"
     q = quantReorder[i][1].split(',',1)[1].split(') ')[0].split(').')[0])
     translation = translation + "{" + q + "}"
